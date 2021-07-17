@@ -6,7 +6,6 @@ package quotes;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -24,39 +23,36 @@ public class App {
         Gson gson = new Gson();
 
         BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\User\\IdeaProjects\\quotes\\app\\src\\main\\java\\quotes\\quotesData.json"));
-        List<quote> quote = gson.fromJson(reader, new TypeToken<List<quote>>() {}.getType());
-        reader.close();
-
+        List<quote> quotes = new Gson().fromJson(reader, new TypeToken<List<quote>>(){}.getType());
         int min = 0;
-        int max = quote.size()-1 ;
+        int max = quotes.size();
+
 
         try{
-
             URL url = new URL("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.connect();
 
-            connection.setRequestMethod("GET");
-            connection.connect();
 
-            InputStreamReader inputStreamReader = new InputStreamReader(connection.getInputStream());
+            InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
+
 
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            BufferedWriter add = new BufferedWriter(new FileWriter("C:\\Users\\User\\IdeaProjects\\quotes\\app\\src\\main\\java\\quotes\\quotesData.json" , false));
 
-            BufferedWriter addTofile = new BufferedWriter(new FileWriter("C:\\Users\\User\\IdeaProjects\\quotes\\app\\src\\main\\java\\quotes\\quotesData.json" , false));
-            QuoteAPI qouteApi = gson.fromJson(bufferedReader,QuoteAPI.class);
-            quote Quotes = new quote(null, qouteApi.getQuoteAuthor(),null, qouteApi.getQuoteText());
-            quote.add(Quotes);
+            quoteApi Api = gson.fromJson(bufferedReader, quoteApi.class);
+            quote getQuote = new quote(null, Api.getQuoteAuthor() , null , Api.getQuoteText());
 
-
+            quotes.add(getQuote);
             gson = gson.newBuilder().setPrettyPrinting().create();
-            System.out.println("Quote from API: "+Quotes);
-            addTofile.write(gson.toJson(quote));
-            addTofile.close();
+
+            add.write(gson.toJson(quotes));
+            add.close();
             bufferedReader.close();
 
-
         }catch (Exception e){
-            System.out.println(quote.get((int)(Math.random()*(max-min+1)+min)));
+            System.out.println(quotes.get((int)(Math.random()*(max-min+1)+min)));
         }
     }
 }

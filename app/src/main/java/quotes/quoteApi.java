@@ -1,10 +1,10 @@
 package quotes;
 
-public class QuoteAPI {
+public class quoteApi {
     private String quoteText;
     private String quoteAuthor;
 
-    public QuoteAPI(String quoteText, String quoteAuthor) {
+    public quoteApi(String quoteText, String quoteAuthor) {
         this.quoteText = quoteText;
         this.quoteAuthor = quoteAuthor;
     }
@@ -19,10 +19,9 @@ public class QuoteAPI {
 
     @Override
     public String toString() {
-        return "QuoteAPI{" +
+        return "quoteApi{" +
                 "quoteText='" + quoteText + '\'' +
                 ", quoteAuthor='" + quoteAuthor + '\'' +
                 '}';
     }
-
 }
