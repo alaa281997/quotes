@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -38,9 +40,13 @@ public class AppTest {
                 index = i;
             }
         }
-        assertTrue("return true if successfully got a random quote from the json file ", index >= 0 && index < 138);
-
-
-}
+        assertTrue("true ", index >= 0 && index < 138);
+    }
+@Test
+    public void testAPI() throws IOException {
+        URL url = new URL("http://ron-swanson-quotes.herokuapp.com/v2/quotes");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        assertTrue(String.valueOf(true), connection.getResponseCode() == 200);
+    }
 
 }
