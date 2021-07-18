@@ -3,15 +3,14 @@
  */
 package quotes;
 
-import com.google.gson.Gson;
+
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.Queue;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
 
 public class App {
     public String getGreeting() {
@@ -21,14 +20,39 @@ public class App {
     public static void main(String[] args) throws IOException {
 
 
+        Gson gson = new Gson();
+
         BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\User\\IdeaProjects\\quotes\\app\\src\\main\\java\\quotes\\quotesData.json"));
-
-
         List<quote> quotes = new Gson().fromJson(reader, new TypeToken<List<quote>>(){}.getType());
-         int min = 0;
-         int max = quotes.size();
-        System.out.println(quotes.get((int)(Math.random()*(max-min+1)+min)));
+        int min = 0;
+        int max = quotes.size();
 
 
+        try{
+            URL url = new URL("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.connect();
+
+
+            InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
+
+
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            BufferedWriter add = new BufferedWriter(new FileWriter("C:\\Users\\User\\IdeaProjects\\quotes\\app\\src\\main\\java\\quotes\\quotesData.json" , false));
+
+            quoteApi Api = gson.fromJson(bufferedReader, quoteApi.class);
+            quote getQuote = new quote(null, Api.getQuoteAuthor() , null , Api.getQuoteText());
+
+            quotes.add(getQuote);
+            gson = gson.newBuilder().setPrettyPrinting().create();
+
+            add.write(gson.toJson(quotes));
+            add.close();
+            bufferedReader.close();
+
+        }catch (Exception e){
+            System.out.println(quotes.get((int)(Math.random()*(max-min+1)+min)));
+        }
     }
 }
