@@ -29,6 +29,7 @@ public class App {
 
 
         try{
+
             URL url = new URL("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
@@ -37,7 +38,8 @@ public class App {
             con.setRequestProperty("User-Agent", "Mozilla 5.0 (Windows; U; "
                     + "Windows NT 5.1; en-US; rv:1.8.0.11) ");
 
-            con.connect();
+
+
             InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
 
 
@@ -45,10 +47,11 @@ public class App {
             BufferedWriter add = new BufferedWriter(new FileWriter("C:\\Users\\User\\IdeaProjects\\quotes\\app\\src\\main\\java\\quotes\\quotesData.json" , false));
 
             quoteApi Api = gson.fromJson(bufferedReader, quoteApi.class);
-            quote getQuote = new quote(null, Api.getQuoteAuthor() , null , Api.getQuoteText());
-
-            quotes.add(getQuote);
+            quote getQuote = new quote(null, Api.getQuoteAuthor(), null , Api.getQuoteText());
+            System.out.println(Api.getQuoteAuthor());
             System.out.println(getQuote);
+            quotes.add(getQuote);
+
             gson = gson.newBuilder().setPrettyPrinting().create();
 
             add.write(gson.toJson(quotes));

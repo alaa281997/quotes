@@ -49,7 +49,7 @@ public class quote {
 
     @Override
     public String toString() {
-        return "Quote{" +
+        return "Quote {" +
                 " Author :'" + author + '\'' +
                 ", text :'" + text + '\'' +
                 '}';
